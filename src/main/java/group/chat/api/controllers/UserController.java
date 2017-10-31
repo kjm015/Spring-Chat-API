@@ -1,5 +1,6 @@
 package group.chat.api.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import group.chat.api.dao.UserDao;
 import group.chat.api.domain.User;
@@ -18,18 +19,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:63343")
+@CrossOrigin
 public class UserController {
     @Autowired
     UserDao userDao;
     ObjectMapper mapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AtomicInteger counter = new AtomicInteger();
-    @RequestMapping(value = "/register", method = RequestMethod.PUT, produces = "text/plain")
-    public ResponseEntity<?> createUser(@RequestParam(value="name") String name) {
+    @RequestMapping(value = "/register", method = RequestMethod.PUT, produces = "text/json")
+    public ResponseEntity<?> createUser(@RequestParam(value="name") String name) throws JsonProcessingException {
         User temp  = new User(counter.incrementAndGet(),name);
         userDao.addUser(temp);
         logger.info("New User: " + temp.toString());
-        return new ResponseEntity<>("User created", HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writeValueAsString(temp), HttpStatus.OK);
     }
 }

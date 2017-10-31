@@ -20,16 +20,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/message")
-@CrossOrigin(origins = "http://localhost:63343")
+@CrossOrigin
     public class ChatController {
     @Autowired
         ChatDao chatDao;
     @Autowired
-    UserDao userDao;
+        UserDao userDao;
 
     ObjectMapper mapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AtomicInteger counter = new AtomicInteger();
+
     @RequestMapping(value = "/send", method = RequestMethod.PUT, produces = "text/json")
     public ResponseEntity<?> postMessage(@RequestParam(value="text") String text, @RequestParam(value="id")int id) {
         Message temp  = new Message(counter.incrementAndGet(), userDao.getUserById(id), text, "12:15");
@@ -38,8 +39,8 @@ import java.util.concurrent.atomic.AtomicLong;
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @RequestMapping(value = "/getMessages", method = RequestMethod.GET, produces = "text/json")
-    public ResponseEntity<?> getMessages() throws JsonProcessingException {
-        logger.info("sent messages");
-        return new ResponseEntity<>(mapper.writeValueAsString(chatDao.getAllMessages()), HttpStatus.OK);
+    public ResponseEntity<?> getMessages(@RequestParam(value="id") int id) throws JsonProcessingException {
+        //logger.info("sent messages");
+        return new ResponseEntity<>(mapper.writeValueAsString(chatDao.getAllMessagesFrom(id)), HttpStatus.OK);
     }
 }
