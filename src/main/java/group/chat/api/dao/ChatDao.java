@@ -13,8 +13,8 @@ public class ChatDao {
 
 
     public List<Message> getAllMessagesFrom(int id) {
-        if(messages.size() > 0 && id >= messages.size()-1) {
-            return messages.subList(id, messages.size());
+        if(messages.size() > 0 && id <= messages.size()) {
+            return messages.subList(id-1, messages.size());
         }
         return messages;
     }

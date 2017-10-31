@@ -32,11 +32,11 @@ import java.util.concurrent.atomic.AtomicLong;
     private final AtomicInteger counter = new AtomicInteger();
 
     @RequestMapping(value = "/send", method = RequestMethod.PUT, produces = "text/json")
-    public ResponseEntity<?> postMessage(@RequestParam(value="text") String text, @RequestParam(value="id")int id) {
+    public ResponseEntity<?> postMessage(@RequestParam(value="text") String text, @RequestParam(value="id")int id) throws JsonProcessingException{
         Message temp  = new Message(counter.incrementAndGet(), userDao.getUserById(id), text, "12:15");
         chatDao.addMessage(temp);
         logger.info("New Message: " + temp.toString());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writeValueAsString(temp),HttpStatus.OK);
     }
     @RequestMapping(value = "/getMessages", method = RequestMethod.GET, produces = "text/json")
     public ResponseEntity<?> getMessages(@RequestParam(value="id") int id) throws JsonProcessingException {
