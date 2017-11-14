@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import group.chat.api.repository.MessageRepository;
 import group.chat.api.repository.UserRepository;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/message")
@@ -27,10 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
     ObjectMapper mapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final AtomicInteger counter = new AtomicInteger();
 
     @RequestMapping(value = "/send", method = RequestMethod.PUT, produces = "text/json")
-    public ResponseEntity<?> postMessage(@RequestParam(value="text") String text, @RequestParam(value="id")long id) throws JsonProcessingException{
+    public ResponseEntity<?> postMessage(@RequestParam(value="text") String text, @RequestParam(value="id")Integer id) throws JsonProcessingException{
         Message temp  = new Message();
         temp.setMessage(text);
         temp.setUser(userRepository.findOne(id));
@@ -40,8 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
     }
     @RequestMapping(value = "/getMessages", method = RequestMethod.GET, produces = "text/json")
     public ResponseEntity<?> getMessages(@RequestParam(value="id") int id) throws JsonProcessingException {
-        //logger.info("sent messages");
-        return null;
-        // return new ResponseEntity<>(mapper.writeValueAsString(messageRepository.getAll(id)), HttpStatus.OK);
+        List<Message> tempMsg = messageRepository.findByIdGreaterThanOrderByIdAsc(id);
+        return new ResponseEntity<>(mapper.writeValueAsString(tempMsg),HttpStatus.OK);
     }
 }

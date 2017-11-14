@@ -1,7 +1,5 @@
 package group.chat.api.domain;
 
-import com.sun.javafx.beans.IDProperty;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,7 +11,7 @@ import java.io.Serializable;
 public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
     private String name;
 
     public int getId() {
