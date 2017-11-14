@@ -1,23 +1,23 @@
 package group.chat.api.domain;
 
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 
+@Entity
 public class Message implements Serializable{
 
-    private final long id;
-    private final User user;
-    private final String message;
-    private final String time;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private Integer id;
+    private User user;
+    private String message;
+    private String time;
 
-    public Message(long id, User user, String message, String time) {
-        this.id = id;
-        this.user = user;
-        this.message = message;
-        this.time = time;
-    }
-
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -29,13 +29,23 @@ public class Message implements Serializable{
         return message;
     }
 
-    @Override
-    public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", user=" + user +
-                ", message='" + message + '\'' +
-                ", time='" + time + '\'' +
-                '}';
+    public String getTime() {
+        return time;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
