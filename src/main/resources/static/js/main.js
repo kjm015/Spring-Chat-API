@@ -18,7 +18,7 @@ $(function() {
     $("#register").click(function () {
         var name = $("#Name").val();
         var url = "user/register";
-
+        if(name !=="") {
         $.ajax({
             url: url,
             type: 'PUT',
@@ -37,6 +37,9 @@ $(function() {
               alert("No Server Connection!");
             }
         });
+    } else {
+            alert("Please enter a name!");
+        }
     });
 });
 
