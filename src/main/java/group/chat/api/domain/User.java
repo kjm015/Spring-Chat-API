@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private int id;
     private String name;
 
     public int getId() {

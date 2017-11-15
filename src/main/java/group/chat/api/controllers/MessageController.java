@@ -32,16 +32,19 @@ import java.util.List;
 
     @RequestMapping(value = "/send", method = RequestMethod.PUT, produces = "text/json")
     public ResponseEntity<?> postMessage(@RequestParam(value="text") String text, @RequestParam(value="id")Integer id) throws JsonProcessingException{
-        Message temp  = new Message();
-        temp.setMessage(text);
-        temp.setUser(userRepository.findOne(id));
-        messageRepository.save(temp);
-        logger.info("New Message: " + temp.toString());
-        return new ResponseEntity<>(mapper.writeValueAsString(temp),HttpStatus.OK);
+        if(text.length() !=0) {
+            Message temp = new Message();
+            temp.setMessage(text);
+            temp.setUser(userRepository.findOne(id));
+            messageRepository.save(temp);
+            logger.info("New Message: " + temp.toString());
+            return new ResponseEntity<>(mapper.writeValueAsString(temp), HttpStatus.OK);
+        }
+        return null;
     }
     @RequestMapping(value = "/getMessages", method = RequestMethod.GET, produces = "text/json")
     public ResponseEntity<?> getMessages(@RequestParam(value="id") int id) throws JsonProcessingException {
-        List<Message> tempMsg = messageRepository.findByIdGreaterThanOrderByIdAsc(id);
+        List<Message> tempMsg = messageRepository.findByIdGreaterThanEqualOrderByIdAsc(id);
         return new ResponseEntity<>(mapper.writeValueAsString(tempMsg),HttpStatus.OK);
     }
 }

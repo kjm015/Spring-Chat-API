@@ -12,12 +12,12 @@ public class Message implements Serializable{
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private Integer id;
+    private int id;
     private User user;
     private String message;
     private String time;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -33,7 +33,7 @@ public class Message implements Serializable{
         return time;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
