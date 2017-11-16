@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import group.chat.api.repository.MessageRepository;
 import group.chat.api.repository.UserRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 
 

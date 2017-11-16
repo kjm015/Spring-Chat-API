@@ -15,7 +15,6 @@ public class Message implements Serializable{
     private int id;
     private User user;
     private String message;
-    private String time;
 
     public int getId() {
         return id;
@@ -27,10 +26,6 @@ public class Message implements Serializable{
 
     public String getMessage() {
         return message;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     public void setId(int id) {
@@ -45,7 +40,13 @@ public class Message implements Serializable{
         this.message = message;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", user=" + user +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
