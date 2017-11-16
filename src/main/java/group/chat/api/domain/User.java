@@ -1,5 +1,6 @@
 package group.chat.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ public class User implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
+    @JsonIgnore
     private String password;
 
     public String getPassword() {
