@@ -1,6 +1,8 @@
 package group.chat.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -13,6 +15,17 @@ public class User implements Serializable{
     private String name;
     @JsonIgnore
     private String password;
+    @JsonInclude()
+    @Transient
+    private String host;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 
     public String getPassword() {
         return password;

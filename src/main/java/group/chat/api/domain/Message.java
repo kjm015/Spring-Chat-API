@@ -1,8 +1,7 @@
 package group.chat.api.domain;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -13,6 +12,17 @@ public class Message implements Serializable{
     private int id;
     private User user;
     private String message;
+    @JsonInclude()
+    @Transient
+    private String host;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 
     public int getId() {
         return id;

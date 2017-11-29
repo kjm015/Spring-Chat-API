@@ -2,7 +2,6 @@ package group.chat.api.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import group.chat.api.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import group.chat.api.repository.UserRepository;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 
@@ -37,6 +39,7 @@ public class UserController {
         User temp = new User();
         temp.setPassword(password);
         temp.setName(name);
+        temp.setHost(hostname());
         userRepository.save(temp);
         logger.info("New User: " + temp.toString());
         return new ResponseEntity<>(mapper.writeValueAsString(temp), HttpStatus.OK);
@@ -52,9 +55,18 @@ public class UserController {
             User temp = users.get(0);
             if (temp.getPassword().equals(password)) {
                 logger.info("Logged in: " + temp.toString());
+                temp.setHost(hostname());
                 return new ResponseEntity<>(mapper.writeValueAsString(temp), HttpStatus.OK);
             }
             return new ResponseEntity<>(mapper.writeValueAsString("Invalid Password"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private String hostname() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException uhe) {
+            return "unknown";
         }
     }
 }
