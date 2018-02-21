@@ -1,18 +1,48 @@
 package group.chat.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
-public class User implements Serializable{
-    final private int id;
-    private String name;
 
-    public User(int id, String name) {
-        this.id = id;
-        this.name = name;
+@Entity
+public class User implements Serializable{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String name;
+    @JsonIgnore
+    private String password;
+    @JsonInclude()
+    @Transient
+    private String host;
+
+    public String getHost() {
+        return host;
     }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -29,5 +59,5 @@ public class User implements Serializable{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
+}
 }

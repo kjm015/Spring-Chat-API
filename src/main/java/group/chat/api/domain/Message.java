@@ -1,23 +1,30 @@
 package group.chat.api.domain;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-
+import javax.persistence.*;
 import java.io.Serializable;
 
+@Entity
 public class Message implements Serializable{
 
-    private final long id;
-    private final User user;
-    private final String message;
-    private final String time;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private int id;
+    private User user;
+    private String message;
+    @JsonInclude()
+    @Transient
+    private String host;
 
-    public Message(long id, User user, String message, String time) {
-        this.id = id;
-        this.user = user;
-        this.message = message;
-        this.time = time;
+    public String getHost() {
+        return host;
     }
 
-    public long getId() {
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getId() {
         return id;
     }
 
@@ -29,13 +36,25 @@ public class Message implements Serializable{
         return message;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+
     @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
                 ", user=" + user +
                 ", message='" + message + '\'' +
-                ", time='" + time + '\'' +
                 '}';
     }
 }
