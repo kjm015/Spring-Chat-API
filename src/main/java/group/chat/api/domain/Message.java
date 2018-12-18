@@ -15,6 +15,7 @@ public class Message implements Serializable {
 	private int id;
 
 	private User user;
+
 	private String message;
 
 	@JsonInclude()

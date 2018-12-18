@@ -1,7 +1,5 @@
 package group.chat.api.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import group.chat.api.domain.LoginRequest;
 import group.chat.api.domain.User;
 import lombok.extern.slf4j.Slf4j;

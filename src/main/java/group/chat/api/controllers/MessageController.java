@@ -1,24 +1,21 @@
 package group.chat.api.controllers;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import group.chat.api.domain.Message;
+import group.chat.api.domain.MessageRequest;
 import group.chat.api.domain.User;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import group.chat.api.repository.MessageRepository;
 import group.chat.api.repository.UserRepository;
 
+import javax.validation.Valid;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/message")
@@ -32,45 +29,53 @@ public class MessageController {
 	@Autowired
 	private UserRepository userRepository;
 
-	ObjectMapper mapper = new ObjectMapper();
+	@PostMapping(path = "/send", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> postMessage(@RequestBody @Valid MessageRequest request) {
+		ResponseEntity entity;
 
-	@PutMapping("/send")
-	public ResponseEntity<?> postMessage(@RequestParam(value = "text") String text, @RequestParam(value = "id") int id, @RequestParam(value = "password") String password) throws JsonProcessingException {
-		User user = userRepository.findById(id).get();
-		if (user == null) {
-			return new ResponseEntity<>(mapper.writeValueAsString("User doesn't exist"), HttpStatus.INTERNAL_SERVER_ERROR);
-		} else if (user.getPassword().equals(password)) {
-			if (text.length() != 0) {
-				Message temp = new Message();
-				temp.setMessage(text);
-				temp.setUser(userRepository.findById(id).get());
-				temp.setHost(getHostName());
-				messageRepository.save(temp);
-				log.info("New Message: " + temp.toString());
-				return new ResponseEntity<>(mapper.writeValueAsString(temp), HttpStatus.OK);
+		Integer id = request.getId();
+		String text = request.getText();
+		String password = request.getPassword();
+
+		if (userRepository.findById(id).isPresent()) {
+			User user = userRepository.findById(id).get();
+
+			// TODO: Use password encryption
+			if (user.getPassword().equals(password)) {
+				Message message = new Message();
+				message.setMessage(text);
+				message.setUser(userRepository.findById(id).get());
+				message.setHost(getHostName());
+				messageRepository.save(message);
+
+				log.info("New Message: " + message.toString());
+				entity = ResponseEntity.ok("Message created: " + message.toString());
 			} else {
-				return new ResponseEntity<>(mapper.writeValueAsString("Message cannot be blank"), HttpStatus.INTERNAL_SERVER_ERROR);
+				entity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password!");
 			}
 		} else {
-			return new ResponseEntity<>(mapper.writeValueAsString("Invalid Password"), HttpStatus.INTERNAL_SERVER_ERROR);
+			entity = ResponseEntity.status(HttpStatus.NOT_FOUND).body("That user does not exist!");
 		}
+
+		return entity;
 	}
 
-	@GetMapping(value = "/getMessages", produces = "text/json")
-	public ResponseEntity<?> getMessages(@RequestParam("id") int id) throws JsonProcessingException {
-		List<Message> tempMsg = messageRepository.findByIdGreaterThanEqualOrderByIdAsc(id);
+	@GetMapping(value = "/getMessages", produces = "application/json")
+	public ResponseEntity<?> getMessages(@RequestParam("id") int id) {
+		List<Message> messages = messageRepository.findByIdGreaterThanEqualOrderByIdAsc(id);
 
-		if (tempMsg.size() > 0) {
-			tempMsg.get(0).setHost(getHostName());
+		if (messages.size() > 0) {
+			messages.get(0).setHost(getHostName());
 		}
 
-		return new ResponseEntity<>(mapper.writeValueAsString(tempMsg), HttpStatus.OK);
+		return ResponseEntity.ok(messages);
 	}
 
 	private String getHostName() {
 		try {
 			return InetAddress.getLocalHost().getHostName();
-		} catch (UnknownHostException uhe) {
+		} catch (UnknownHostException e) {
+			log.warn("Could not retrieve hostname");
 			return "unknown";
 		}
 	}
