@@ -23,26 +23,28 @@ import java.util.List;
 public class UserController {
 
 	@Autowired
-	UserRepository userRepository;
-
-	ObjectMapper mapper = new ObjectMapper();
+	private UserRepository userRepository;
 
 	@PutMapping(value = "/register", produces = "text/json")
-	public ResponseEntity<?> createUser(@RequestParam(value = "name") String name, @RequestParam(value = "password") String password) throws JsonProcessingException {
+	public ResponseEntity<?> createUser(@RequestParam(value = "name") String name, @RequestParam(value = "password") String password) {
 		name = name.trim();
 
-		if (userRepository.findByName(name).size() != 0) {
-			return new ResponseEntity<>(mapper.writeValueAsString("Username already exists."), HttpStatus.CONFLICT);
+		ResponseEntity entity;
+
+		if (userRepository.existsByName(name)) {
+			entity = ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists.");
+		} else {
+			User temp = new User();
+			temp.setPassword(password);
+			temp.setName(name);
+			temp.setHost(getHostName());
+			userRepository.save(temp);
+
+			log.info("New User: " + temp.toString());
+			entity = ResponseEntity.ok(temp);
 		}
 
-		User temp = new User();
-		temp.setPassword(password);
-		temp.setName(name);
-		temp.setHost(getHostName());
-		userRepository.save(temp);
-
-		log.info("New User: " + temp.toString());
-		return new ResponseEntity<>(mapper.writeValueAsString(temp), HttpStatus.OK);
+		return entity;
 	}
 
 	@PostMapping(path = "/login", produces = "text/json")
