@@ -1,7 +1,7 @@
 package group.chat.api.controllers;
 
 import group.chat.api.domain.LoginRequest;
-import group.chat.api.domain.SignupRequest;
+import group.chat.api.domain.SignUpRequest;
 import group.chat.api.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UserController {
 	private UserRepository userRepository;
 
 	@PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createUser(@RequestBody @Valid SignupRequest request) {
+	public ResponseEntity<?> createUser(@RequestBody @Valid SignUpRequest request) {
 		String name = request.getName().trim();
 		String password = request.getPassword();
 
