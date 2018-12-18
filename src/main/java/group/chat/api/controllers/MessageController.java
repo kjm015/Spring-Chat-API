@@ -52,7 +52,7 @@ public class MessageController {
 				messageRepository.save(message);
 
 				log.info("New Message: " + message.toString());
-				entity = ResponseEntity.ok("Message created: " + message.toString());
+				entity = ResponseEntity.status(HttpStatus.CREATED).body("Message created: " + message.toString());
 			} else {
 				entity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password!");
 			}
