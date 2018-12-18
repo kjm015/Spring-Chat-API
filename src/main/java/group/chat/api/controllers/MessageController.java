@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import group.chat.api.repository.MessageRepository;
 import group.chat.api.repository.UserRepository;
@@ -29,6 +30,9 @@ public class MessageController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private PasswordEncoder encoder;
+
 	@PostMapping(path = "/send", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> postMessage(@RequestBody @Valid MessageRequest request) {
 		ResponseEntity entity;
@@ -40,8 +44,7 @@ public class MessageController {
 		if (userRepository.findById(id).isPresent()) {
 			User user = userRepository.findById(id).get();
 
-			// TODO: Use password encryption
-			if (user.getPassword().equals(password)) {
+			if (encoder.matches(password, user.getPassword())) {
 				Message message = new Message();
 				message.setMessage(text);
 				message.setUser(userRepository.findById(id).get());
