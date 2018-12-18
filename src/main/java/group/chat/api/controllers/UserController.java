@@ -47,7 +47,7 @@ public class UserController {
 			userRepository.save(user);
 
 			log.info("New User: " + user.toString());
-			entity = ResponseEntity.ok(user);
+			entity = ResponseEntity.status(HttpStatus.CREATED).body(user);
 		}
 
 		return entity;
