@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import group.chat.api.repository.UserRepository;
 
@@ -17,7 +16,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
-@Repository
+@RestController
 @RequestMapping("/user")
 @CrossOrigin
 @Slf4j
@@ -26,7 +25,7 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createUser(@RequestBody @Valid SignUpRequest request) {
 		String name = request.getName().trim();
 		String password = request.getPassword();
@@ -50,7 +49,7 @@ public class UserController {
 		return entity;
 	}
 
-	@PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> loginUser(@RequestBody @Valid LoginRequest request) {
 		String name = request.getName();
 		String password = request.getPassword();
