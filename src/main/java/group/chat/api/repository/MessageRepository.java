@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends CrudRepository<Message, Integer> {
-    List<Message> findByIdGreaterThanEqualOrderByIdAsc(Integer id);
+	List<Message> findByIdGreaterThanEqualOrderByIdAsc(Integer id);
 }
