@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import group.chat.api.repository.UserRepository;
 
@@ -25,10 +26,13 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private PasswordEncoder encoder;
+
 	@PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createUser(@RequestBody @Valid SignUpRequest request) {
 		String name = request.getName().trim();
-		String password = request.getPassword();
+		String password = encoder.encode(request.getPassword());
 
 		ResponseEntity entity;
 
@@ -62,12 +66,11 @@ public class UserController {
 			log.warn("Tried to login in as invalid user");
 			entity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found!");
 		} else {
-			User temp = users.get(0);
+			User user = users.get(0);
 
-			// TODO: Encrypt stored passwords
-			if (temp.getPassword().equals(password)) {
-				log.info("Logged in: " + temp.toString());
-				temp.setHost(getHostName());
+			if (encoder.matches(password, user.getPassword())) {
+				log.info("Logged in: " + user.toString());
+				user.setHost(getHostName());
 				entity = ResponseEntity.ok("Login successful!");
 			} else {
 				entity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password!");
