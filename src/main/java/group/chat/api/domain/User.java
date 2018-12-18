@@ -2,62 +2,33 @@ package group.chat.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-
 @Entity
-public class User implements Serializable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    private String name;
-    @JsonIgnore
-    private String password;
-    @JsonInclude()
-    @Transient
-    private String host;
+@Data
+public class User implements Serializable {
 
-    public String getHost() {
-        return host;
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+	private String name;
 
-    public String getPassword() {
-        return password;
-    }
+	@JsonIgnore
+	private String password;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	@JsonInclude()
+	@Transient
+	private String host;
 
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-}
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
+	}
 }
